@@ -1,13 +1,16 @@
-web:
-  image: msaraiva/elixir-dev:latest
-  ports:
-    - "80:80"
-  volumes:
-    - .:/usr/local/elegant-ci
-  links:
-    - rabbitmq
+version: "2"
+services:
+  web:
+    image: msaraiva/elixir-dev:latest
+    ports:
+      - "80:80"
+    volumes:
+      - .:/usr/local/elegant-ci
+    links:
+      - rabbitmq
+    command: tail -f /usr/local/elegant-ci/docker-compose.yml
 
-rabbitmq:
-  image: rabbitmq:3.6.0-management
-  ports:
-    - "15672:15672"
+  rabbitmq:
+    image: rabbitmq:3.6.0-management
+    ports:
+      - "15672:15672"
