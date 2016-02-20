@@ -1,16 +1,26 @@
 version: "2"
 services:
   web:
-    image: msaraiva/elixir-dev:latest
+    build:
+      context: ./dockerfiles/elegant-ci
+    container_name: elegant-ci
+    depends_on:
+      - rabbitmq
     ports:
-      - "80:80"
+      - "80:8080"
     volumes:
-      - .:/usr/local/elegant-ci
+      - ./dockerfiles/elegant-ci/elegant_ci:/var/lib/elegant_ci
     links:
       - rabbitmq
-    command: tail -f /usr/local/elegant-ci/docker-compose.yml
+    environment:
+      - RABBITMQ_NODE_IP_ADDRESS=rabbitmq
+      - RABBITMQ_NODE_PORT=5672
+    working_dir: /var/lib/elegant_ci
+    command: mix deps.clean && mix get.deps && mix run --no-halt
 
   rabbitmq:
-    image: rabbitmq:3.6.0-management
+    build:
+      context: ./dockerfiles/rabbitmq
+    container_name: rabbitmq
     ports:
-      - "15672:15672"
+      - "5672"
